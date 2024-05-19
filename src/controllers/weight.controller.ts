@@ -1,7 +1,7 @@
 import pool from "../config/database";
 
 export const getWeight = async (req: any, res: any) => {
-  const response = await pool.query("SELECT * FROM weight");
+  const response = await pool.query("SELECT weight FROM ip_config");
   res.status(200).json(response.rows);
 };
 
@@ -9,9 +9,9 @@ export const updateWeight = async (req: { params: { id: string; }; body: { weigh
   const id = req.params.id;
   const { weight } = req.body;
 
-  await pool.query(
-    "UPDATE weight SET weight = $1 WHERE id = $2",
-    [weight, id]
-  );
+  await pool.query("UPDATE ip_config SET weight = $1 WHERE id = $2", [
+    weight,
+    id,
+  ]);
   res.json("Weight Updated Successfully");
 };

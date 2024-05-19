@@ -1,5 +1,7 @@
 import express, { Response } from "express";
-export const router = express.Router();
+
+const router = express.Router();
+
 router.get("/api", (req: any, res: Response) => {
   res.status(200).send({
     success: "true",
@@ -7,4 +9,5 @@ router.get("/api", (req: any, res: Response) => {
     version: "1.0.0",
   });
 });
-module.exports = router;
+
+export default router;

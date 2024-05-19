@@ -5,11 +5,11 @@ export const getIpConfig = async (req: any, res: any) => {
   res.status(200).json(response.rows);
 };
 
-export const createIpConfig = async (req: { body: { ip: any; }; }, res: { json: (arg0: { message: string; body: { ip: { ip: any; }; }; }) => void; }) => {
-  const { ip } = req.body;
+export const createIpConfig = async (req: { body: { ip: any; token: any; }; }, res: { json: (arg0: { message: string; body: { ip: { ip: any; }; }; }) => void; }) => {
+  const { ip, token } = req.body;
   
   await pool.query(
-    "INSERT INTO ip_config (ip) VALUES ($1)",
+    "INSERT INTO ip_config (ip, identify, user) VALUES ($1, $2, $3)",
     [ip]
   );
   res.json({
