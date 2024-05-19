@@ -1,59 +1,13 @@
 import express from "express";
-
-import find from "local-devices";
-// import os from "os";
-
+import cors from "cors";
+import router from "./routes/ip-config.routes";
+import { router as index } from "./routes";
 const app = express();
-const port = 3000;
 
-app.get("/", (req, res) => {
-  // const interfaces = os.networkInterfaces();
-  // const network = Object.keys(interfaces).map((name) => interfaces[name]);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.json({ type: "application/vnd.api+json" }));
+app.use(cors());
 
-  // const devices = network.flat() as os.NetworkInterfaceInfo[];
-
-  // const localDevices = devices
-  //   .filter(
-  //     (device) =>
-  //       device.family === "IPv4" &&
-  //       !device.internal &&
-  //       (device.address?.startsWith("192.168") ||
-  //         device.address?.startsWith("10.0") ||
-  //         device.address?.startsWith("172.16"))
-  //   )
-  //   .map((device) => device.address);
-
-  // const ipFirstInterval = localDevices[0].split(".").slice(0, 3).join(".");
-
-  // const ipRange = `${ipFirstInterval}.1-${ipFirstInterval}.255`;
-
-  find({
-    address: "192.168.100.1-192.168.100.255",
-    skipNameResolution: false,
-  })
-    .then((devices) => {
-      // const devicesIp = devices.map((device) => device.ip);
-      // const devicesIpFiltered = devicesIp.filter((device) =>
-      //   device.startsWith(ipFirstInterval)
-      // );
-
-      res.setHeader("Content-Type", "application/json");
-      res.send(
-        JSON.stringify({
-          devices: devices,
-        })
-      );
-    })
-    .catch((error) => {
-      res.setHeader("Content-Type", "application/json");
-      res.send(
-        JSON.stringify({
-          error: error,
-        })
-      );
-    });
-});
-
-app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
-});
+app.use(index);
+app.use("/api/", router);
