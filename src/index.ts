@@ -30,19 +30,28 @@ app.get("/", (req, res) => {
   find({
     address: "192.168.100.1-192.168.100.255",
     skipNameResolution: false,
-  }).then((devices) => {
-    // const devicesIp = devices.map((device) => device.ip);
-    // const devicesIpFiltered = devicesIp.filter((device) =>
-    //   device.startsWith(ipFirstInterval)
-    // );
+  })
+    .then((devices) => {
+      // const devicesIp = devices.map((device) => device.ip);
+      // const devicesIpFiltered = devicesIp.filter((device) =>
+      //   device.startsWith(ipFirstInterval)
+      // );
 
-    res.setHeader("Content-Type", "application/json");
-    res.send(
-      JSON.stringify({
-        devices: devices,
-      })
-    );
-  });
+      res.setHeader("Content-Type", "application/json");
+      res.send(
+        JSON.stringify({
+          devices: devices,
+        })
+      );
+    })
+    .catch((error) => {
+      res.setHeader("Content-Type", "application/json");
+      res.send(
+        JSON.stringify({
+          error: error,
+        })
+      );
+    });
 });
 
 app.listen(port, () => {
