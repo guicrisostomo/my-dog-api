@@ -1,7 +1,7 @@
 import express from "express";
 
 import find from "local-devices";
-import os from "os";
+// import os from "os";
 
 const app = express();
 const port = 3000;
