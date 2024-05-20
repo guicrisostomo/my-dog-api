@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
+import { config } from "dotenv";
 import { Pool } from "pg";
-import dotenv from "dotenv";
 
-dotenv.config();
+config();
 
 const pool = new Pool({
   user: process.env.DB_USER,

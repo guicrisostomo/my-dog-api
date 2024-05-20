@@ -1,32 +1,31 @@
-import pool from "../config/database";
+/* eslint-disable prettier/prettier */
+import { Body, Controller, Get, Post, Request, Put, UnauthorizedException } from "@nestjs/common";
+import { IpConfigService } from "src/services/ip-config.service";
 
-export const getIpConfig = async (req: any, res: any) => {
-  const response = await pool.query("SELECT * FROM ip_config");
-  res.status(200).json(response.rows);
-};
+@Controller("ip-config")
+export class IpConfigController {
+  constructor(private readonly ipConfigService: IpConfigService) {}
 
-export const createIpConfig = async (req: { body: { ip: any; token: any; }; }, res: { json: (arg0: { message: string; body: { ip: { ip: any; }; }; }) => void; }) => {
-  const { ip, token } = req.body;
-  
-  await pool.query(
-    "INSERT INTO ip_config (ip, identify, user) VALUES ($1, $2, $3)",
-    [ip]
-  );
-  res.json({
-    message: "IpConfig Added successfully",
-    body: {
-      ip: { ip },
-    },
-  });
-};
+  @Get()
+  async getIpConfig() {
+    return await this.ipConfigService.getIpConfig();
+  }
 
-export const updateIpConfig = async (req: { params: { id: string; }; body: { ip: any }; }, res: { json: (arg0: string) => void; }) => {
-  const id = req.params.id;
-  const { ip } = req.body;
+  @Post()
+  async createIpConfig(@Request() request: Request, @Body("ip") ip: any, @Body("identify") identify: any) {
+    const token = request["headers"]["authorization"].replace("Bearer ", "");
 
-  await pool.query(
-    "UPDATE ip_config SET ip = $1 WHERE id = $2",
-    [ip, id]
-  );
-  res.json("IpConfig Updated Successfully");
-};
+    if (!token) throw new UnauthorizedException();
+    
+    return await this.ipConfigService.insertIpConfig(ip, token, identify);
+  }
+
+  @Put(":id")
+  async updateIpConfig(@Body("ip") ip: any, @Request() request: Request) {
+    const token = request["headers"]["authorization"].replace("Bearer ", "");
+
+    if (!token) throw new UnauthorizedException();
+
+    return await this.ipConfigService.updateIpConfig(token, ip);
+  }
+}

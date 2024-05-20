@@ -1,17 +1,18 @@
-import pool from "../config/database";
+/* eslint-disable prettier/prettier */
+import { Body, Controller, Get, Put } from "@nestjs/common";
+import { WeightService } from "src/services/weight.service";
 
-export const getWeight = async (req: any, res: any) => {
-  const response = await pool.query("SELECT weight FROM ip_config");
-  res.status(200).json(response.rows);
-};
+@Controller("weight")
+export class WeightController {
+  constructor(private readonly weightService: WeightService) { }
+  
+  @Get(":id")
+  async getWeight() {
+    return await this.weightService.getWeight();
+  }
 
-export const updateWeight = async (req: { params: { id: string; }; body: { weight: any; }; }, res: { json: (arg0: string) => void; }) => {
-  const id = req.params.id;
-  const { weight } = req.body;
-
-  await pool.query("UPDATE ip_config SET weight = $1 WHERE id = $2", [
-    weight,
-    id,
-  ]);
-  res.json("Weight Updated Successfully");
-};
+  @Put()
+  async updateWeight(@Body("id") id: string, @Body("weight") weight: any) {
+    return await this.weightService.updateWeight(id, weight);
+  }
+}
